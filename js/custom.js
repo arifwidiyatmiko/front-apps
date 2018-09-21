@@ -42,7 +42,7 @@ $(document).ready(function()
 
 	initHomeSlider();
 	initSearch();
-	initMenu();
+	// initMenu();
 	initIsotope();
 
 	/* 

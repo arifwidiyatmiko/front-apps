@@ -283,15 +283,15 @@ section
 }
 .button_light
 {
-	border: solid 2px #FFFFFF;
+	border: solid 2px black;
 }
 .button_light a
 {
-	color: #FFFFFF;
+	color: #000000;
 }
 .button:hover a
 {
-	color: #FFFFFF;
+	color: #000000;
 }
 .button_light:hover a
 {
