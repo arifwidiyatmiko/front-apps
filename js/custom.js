@@ -17,16 +17,22 @@
 $(document).ready(function()
 {
 	"use strict";
-
+		$('#blogCarousel').carousel({
+				interval: 5000
+		});
 	/* 
 
 	1. Vars and Inits
 
 	*/
-
+	// const URL = 'http://localhost/backend/';
+	const URL = 'http://192.168.0.10/backend/';
 	var header = $('.header');
 	var hambActive = false;
 	var menuActive = false;
+	var categories_menu = '';
+	var categories_menu_mm = '';
+	var product_content = '';
 
 	setHeader();
 
@@ -42,8 +48,10 @@ $(document).ready(function()
 
 	initHomeSlider();
 	initSearch();
-	// initMenu();
-	initIsotope();
+	initMenu();
+	getProduct();
+	// initIsotope();
+	getCategories();
 
 	/* 
 
@@ -298,4 +306,68 @@ $(document).ready(function()
 		}
 	}
 
+
+	/* 
+	7. Load Kategori Dropdown Menu
+	*/
+	function getCategories() {
+		// body...
+		$.ajax({
+            url: URL+'categories/',
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'auth': '12345'
+            },
+            contentType: 'application/json;',
+            success: function (result) {
+               // CallBack(result);
+               console.log(result);
+
+               $.each(result.data, function(key,val){
+               	categories_menu += '<li><a href="categories.html?id='+val.idCategories+'">'+val.categoriesName+'</a></li>';
+               	categories_menu_mm += '<li class="page_menu_item menu_mm"><a href="categories.html?id='+val.idCategories+'">'+val.categoriesName+'</a></li>';
+               });
+               $('#menu_categories').append(categories_menu);
+               $('.page_menu_selection').append(categories_menu_mm);
+            },
+            error: function (error) {
+                
+            }
+        });
+	}
+	function getProduct(id='') {
+		// body...
+		$.ajax({
+            url: URL+'product/',
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'auth': '12345'
+            },
+            contentType: 'application/json;',
+            success: function (result) {
+               // CallBack(result);
+               // console.log(result);
+               // product_content += '<div class="product_grid">';
+               $.each(result.data, function(key,val){
+               
+				product_content += '<div class="col-md-3">';
+                product_content += '	<a href="product.html?id='+val.idProduct+'">';
+                product_content += '		<img src="'+URL+'/assets/uploads/'+JSON.parse(val.productImage).image1+'" alt="Image" style="max-width:100%;">';
+                product_content += '	</a>';
+                product_content += '<span>'+val.productName+'</span>';
+                product_content += '</div>';
+				
+               });
+               // product_content += '</div>';
+               $('#product_grids').append(product_content);
+               // console.log(product_content);
+               
+            },
+            error: function (error) {
+                
+            }
+        });
+	}
 });

@@ -18,16 +18,27 @@
 $(document).ready(function()
 {
 	"use strict";
-
+	// var query = window.location;
+	// 	       console.log(query);
 	/* 
 
 	1. Vars and Inits
 
 	*/
+	
 
 	var header = $('.header');
 	var hambActive = false;
 	var menuActive = false;
+
+	// const URL = 'http://localhost/backend/';
+	const URLS = 'http://192.168.0.10/backend/';
+	var categories_menu ='';
+	var categories_menu_mm='';
+	var content_image = '';
+	var content_image_large = '';
+	var idProduct = getQueryVariable("id");
+
 
 	setHeader();
 
@@ -45,8 +56,9 @@ $(document).ready(function()
 	initMenu();
 	initImage();
 	initQuantity();
+	getCategories();
 	initIsotope();
-
+	getProduct(idProduct);
 	/* 
 
 	2. Set Header
@@ -160,6 +172,17 @@ $(document).ready(function()
 			}
 		}
 	}
+
+	function getQueryVariable(variable)
+		{
+		    var query = new URL(window.location.href);
+		    var query_string = query.search;
+
+			var search_params = new URLSearchParams(query_string); 
+
+			var id = search_params.get('id');
+			return id;
+		}
 
 	function openMenu()
 	{
@@ -281,6 +304,92 @@ $(document).ready(function()
 	            }
 	        });
 		}
+	}
+	function getCategories() {
+		// body...
+		$.ajax({
+            url: URLS+'categories/',
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'auth': '12345'
+            },
+            contentType: 'application/json;',
+            success: function (result) {
+               // CallBack(result);
+               console.log(result);
+
+               $.each(result.data, function(key,val){
+               	categories_menu += '<li><a href="categories.html?id='+val.idCategories+'">'+val.categoriesName+'</a></li>';
+               	categories_menu_mm += '<li class="page_menu_item menu_mm"><a href="categories.html?id='+val.idCategories+'">'+val.categoriesName+'</a></li>';
+               });
+               $('#menu_categories').append(categories_menu);
+               $('.page_menu_selection').append(categories_menu_mm);
+            },
+            error: function (error) {
+                
+            }
+        });
+	}
+	function getProduct(id='') {
+		// body...
+		$.ajax({
+            url: URLS+'product/index/'+id,
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'auth': '12345'
+            },
+            contentType: 'application/json;',
+            success: function (result) {
+               // CallBack(result);
+               console.log(result);
+               $('.home_title').append(result[0].productName);
+               $('.details_name').append(result[0].productName);
+               $('.details_price').append(result[0].productPrice);
+               $('.details_text').append(result[0].productDetails);
+               $('.description_text').append(result[0].productDetails);
+               var image = [];
+               image.push(JSON.parse(result[0].productImage).image1);
+               image.push(JSON.parse(result[0].productImage).image2);
+               image.push(JSON.parse(result[0].productImage).image3);
+               var i = true;
+               $.each(image,function(key,val){
+
+               	if (val != '') {
+               		console.log(val);
+               		if (i == true) {
+               			content_image_large = '<img src="'+URLS+'assets/uploads/'+val+'" alt="">';
+               			var st = "active";i=false;
+               		}else{var st = "";}
+               		content_image += '<div class="details_image_thumbnail '+st+'" data-image="'+URLS+'assets/uploads/'+val+'"><img src="'+URLS+'assets/uploads/'+val+'" alt=""></div>';
+               	}
+               });
+
+    //            product_content += '<div class="product_grid">';
+    //            $.each(result.data, function(key,val){
+    //            	// categories_menu += '<li><a href="#'+val.idCategories+'">'+val.categoriesName+'</a></li>';
+    //            	product_content += '<div class="col-sm-3 product">';
+				// product_content += '	<div class="product_image"><img src="images/product_1.jpg" alt=""></div>';
+				// product_content += '	<div class="product_extra product_new"><a href="categories.html">New</a></div>';
+				// product_content += '	<div class="product_content">';
+				// product_content += '		<div class="product_title"><a href="product.html#id='+val.idProduct+'">'+val.productName+'</a></div>';
+				// product_content += '		<div class="product_price">$670</div>';
+				// product_content += '	</div>';
+				// product_content += '</div>';
+				
+    //            });
+    //            product_content += '</div>';
+     // console.log(content_image);
+     			$('.details_image_large').append(content_image_large);
+               $('#images_product').append(content_image);
+              
+               
+            },
+            error: function (error) {
+                
+            }
+        });
 	}
 
 });
