@@ -32,7 +32,7 @@ $(document).ready(function()
 	var menuActive = false;
 
 	// const URL = 'http://localhost/backend/';
-	const URLS = 'http://192.168.0.10/backend/';
+	const URLS = 'http://192.168.1.24/backend/';
 	var categories_menu ='';
 	var categories_menu_mm='';
 	var content_image = '';

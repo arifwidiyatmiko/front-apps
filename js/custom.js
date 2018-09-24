@@ -26,7 +26,7 @@ $(document).ready(function()
 
 	*/
 	// const URL = 'http://localhost/backend/';
-	const URL = 'http://192.168.0.10/backend/';
+	const URL = 'http://192.168.1.24/backend/';
 	var header = $('.header');
 	var hambActive = false;
 	var menuActive = false;
@@ -52,6 +52,7 @@ $(document).ready(function()
 	getProduct();
 	// initIsotope();
 	getCategories();
+	getBlog();
 
 	/* 
 
@@ -348,7 +349,7 @@ $(document).ready(function()
             contentType: 'application/json;',
             success: function (result) {
                // CallBack(result);
-               // console.log(result);
+               console.log(result);
                // product_content += '<div class="product_grid">';
                $.each(result.data, function(key,val){
                
@@ -364,6 +365,27 @@ $(document).ready(function()
                $('#product_grids').append(product_content);
                // console.log(product_content);
                
+            },
+            error: function (error) {
+                
+            }
+        });
+	}
+	function getBlog() {
+		$.ajax({
+            url: URL+'blog/',
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'auth': '12345'
+            },
+            contentType: 'application/json;',
+            success: function (result) {
+               // CallBack(result);
+               console.log(result);
+               $('#blog_main_title').append(result.data[0].blogTitle);
+               $('#blog_main_title_url').attr('href','blog.html?id='+result.data[0].idBlog);
+               // $('.avds_title').append(result.data[0].blogTitle);
             },
             error: function (error) {
                 

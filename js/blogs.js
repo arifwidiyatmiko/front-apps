@@ -32,9 +32,9 @@ $(document).ready(function()
 	var categories_menu ='';
 	var categories = {};
 	var categories_menu_mm='';
-	var product_contents = '';
-	var idProduct = getQueryVariable("qword");
-	console.log(idProduct)
+	var blog_cards = '';
+	var idProduct = getQueryVariable("id");
+
 	setHeader();
 
 	$(window).on('resize', function()
@@ -50,9 +50,9 @@ $(document).ready(function()
 	initSearch();
 	initMenu();
 	initIsotope();
-
 	getCategories();
-	getProductCategories(idProduct);
+	getBlogList();
+	// getProductCategories(idProduct);
 
 	/* 
 
@@ -252,7 +252,7 @@ $(document).ready(function()
 
 			var search_params = new URLSearchParams(query_string); 
 
-			var id = search_params.get(variable);
+			var id = search_params.get('id');
 			return id;
 		}
 	function getCategories() {
@@ -280,10 +280,10 @@ $(document).ready(function()
             }
         });
 	}
-	function getProductCategories(id='') {
+	function getBlogList(id='') {
 		// body...
 		$.ajax({
-            url: URLS+'product/search/'+id,
+            url: URLS+'blog',
             type: 'GET',
             dataType: 'json',
             headers: {
@@ -293,23 +293,16 @@ $(document).ready(function()
             success: function (result) {
                // CallBack(result);
                console.log(result);
-               $('#total_product').append(result.count);
-               $('.home_title').html(id);
-               // var product_contents = '';
-               // product_content += '<div class="product_grid">';
-               $.each(result.data, function(key,val){
-               	// product_contents += '<div class="card"> <img src="images/product_2.jpg" alt="Avatar" style="width:100%"> <div class="container"> <h4><b>John Doe</b></h4> <p>Architect & Engineer</p></div></div>';
-               	product_contents += '<div class="col-md-3 center-block text-center" style="padding:5px;">';
-                product_contents += '	<a href="product.html?id='+val.idProduct+'">';
-                product_contents += '		<img src="'+URLS+'/assets/uploads/'+JSON.parse(val.productImage).image1+'" alt="Image" style="max-width:100%;">';
-                product_contents += '	</a>';
-                product_contents += '<h4>'+val.productName+'</h4>';
-                product_contents += '<a href="#" class="btn btn-sm btn-primary">'+val.productPrice+'</a>';
-                product_contents += '</div><div class="clearfix"></div>';
+               $.each(result.data,function(key,val) {
+               	// blog_cards +=
+               	blog_cards += '<div class="col-md-4">';
+		        blog_cards +='  <h2>'+val.blogTitle+'</h2>';
+		        // blog_cards +='  <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. ';
+		        blog_cards +=  val.blogContent.substring(0,200);
+		        blog_cards +='  <p><a class="btn btn-default" href="blog.html?id='+val.idBlog+'&slug='+val.blogSlug+'" role="button">View details &raquo;</a></p>';
+		        blog_cards +='</div>';
                });
-               console.log(product_contents);
-               // product_content += '</div>';
-               $('#product_grids').append(product_contents);
+               $('#blog_grids').append(blog_cards);
             },
             error: function (error) {
                 
